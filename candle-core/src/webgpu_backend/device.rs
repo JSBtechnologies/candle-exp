@@ -73,7 +73,6 @@ impl WebGpuDevice {
                     label: Some(&format!("Candle WebGPU Device {}", ordinal)),
                     required_features: wgpu::Features::empty(),
                     required_limits: wgpu::Limits::default(),
-                    memory_hints: wgpu::MemoryHints::default(),
                 },
                 None,
             )
@@ -162,8 +161,6 @@ impl WebGpuDevice {
                 layout: None, // Automatic layout derivation from shader
                 module: &shader_module,
                 entry_point,
-                compilation_options: Default::default(),
-                cache: None,
             }));
 
         pipelines.insert(name.to_string(), Arc::clone(&pipeline));
