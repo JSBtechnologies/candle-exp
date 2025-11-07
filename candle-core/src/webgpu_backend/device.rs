@@ -67,21 +67,12 @@ impl WebGpuDevice {
             .ok_or(WebGpuError::AdapterNotFound)?;
 
         // Request device and queue
-        // For WASM, use adapter's default limits to avoid browser-unsupported fields
-        // wgpu::Limits structs include fields like maxInterStageShaderComponents that
-        // aren't in the stable WebGPU spec yet
-        #[cfg(target_arch = "wasm32")]
-        let limits = adapter.limits();
-
-        #[cfg(not(target_arch = "wasm32"))]
-        let limits = wgpu::Limits::default();
-
         let (device, queue) = adapter
             .request_device(
                 &DeviceDescriptor {
                     label: Some(&format!("Candle WebGPU Device {}", ordinal)),
                     required_features: wgpu::Features::empty(),
-                    required_limits: limits,
+                    required_limits: wgpu::Limits::default(),
                     memory_hints: wgpu::MemoryHints::default(),
                 },
                 None,
