@@ -32,6 +32,8 @@ safetensors = { workspace = true }
 thiserror = { workspace = true }
 yoke = { workspace = true }
 zip = { workspace = true }
+wgpu = { version = "22.1.0", optional = true }
+pollster = { version = "0.3", optional = true }
 
 [target.'cfg(all(not(target_arch = "wasm32"), not(target_os = "ios")))'.dependencies]
 ug = { workspace = true }
@@ -56,6 +58,7 @@ metal = [
     "dep:candle-metal-kernels",
     "dep:ug-metal",
 ]
+webgpu = ["dep:wgpu", "dep:pollster"]
 
 [[bench]]
 name = "bench_main"

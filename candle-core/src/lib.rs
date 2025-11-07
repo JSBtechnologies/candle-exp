@@ -68,6 +68,8 @@ mod indexer;
 pub mod layout;
 #[cfg(feature = "metal")]
 pub mod metal_backend;
+#[cfg(feature = "webgpu")]
+pub mod webgpu_backend;
 #[cfg(feature = "mkl")]
 mod mkl;
 pub mod npy;
@@ -117,6 +119,9 @@ pub use metal_backend::{MetalDevice, MetalError, MetalStorage};
 
 #[cfg(not(feature = "metal"))]
 pub use dummy_metal_backend::{MetalDevice, MetalError, MetalStorage};
+
+#[cfg(feature = "webgpu")]
+pub use webgpu_backend::{WebGpuDevice, WebGpuStorage};
 
 #[cfg(feature = "mkl")]
 extern crate intel_mkl_src;

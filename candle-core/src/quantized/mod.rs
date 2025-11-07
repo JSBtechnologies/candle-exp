@@ -52,6 +52,10 @@ impl Device {
                 let storage = cuda::QCudaStorage::zeros(cuda, elem_count, dtype)?;
                 Ok(QStorage::Cuda(storage))
             }
+            #[cfg(feature = "webgpu")]
+            Device::WebGpu(_webgpu) => {
+                crate::bail!("WebGPU backend does not support quantized tensors yet")
+            }
         }
     }
 }

@@ -631,6 +631,8 @@ impl Tensor {
             Storage::Cpu(cpu_storage) => from_cpu_storage(cpu_storage),
             Storage::Cuda(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
             Storage::Metal(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
+            #[cfg(feature = "webgpu")]
+            Storage::WebGpu(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
         }
     }
 
@@ -1790,6 +1792,8 @@ impl Tensor {
             Storage::Cpu(storage) => from_cpu_storage(storage),
             Storage::Cuda(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
             Storage::Metal(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
+            #[cfg(feature = "webgpu")]
+            Storage::WebGpu(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
         }
     }
 
@@ -1821,6 +1825,8 @@ impl Tensor {
             Storage::Cpu(storage) => from_cpu_storage(storage),
             Storage::Cuda(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
             Storage::Metal(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
+            #[cfg(feature = "webgpu")]
+            Storage::WebGpu(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
         }
     }
 
@@ -1862,6 +1868,8 @@ impl Tensor {
             Storage::Cpu(storage) => from_cpu_storage(storage),
             Storage::Cuda(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
             Storage::Metal(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
+            #[cfg(feature = "webgpu")]
+            Storage::WebGpu(storage) => from_cpu_storage(&storage.to_cpu_storage()?),
         }
     }
 
@@ -2218,13 +2226,26 @@ impl Tensor {
                 (Storage::Cpu(storage), Device::Metal(metal)) => {
                     Storage::Metal(metal.storage_from_cpu_storage(storage)?)
                 }
+                #[cfg(feature = "webgpu")]
+                (Storage::Cpu(storage), Device::WebGpu(webgpu)) => {
+                    Storage::WebGpu(webgpu.storage_from_cpu_storage(storage)?)
+                }
                 (Storage::Cuda(storage), Device::Cpu) => Storage::Cpu(storage.to_cpu_storage()?),
                 (Storage::Metal(storage), Device::Cpu) => Storage::Cpu(storage.to_cpu_storage()?),
+                #[cfg(feature = "webgpu")]
+                (Storage::WebGpu(storage), Device::Cpu) => Storage::Cpu(storage.to_cpu_storage()?),
                 (Storage::Cuda(storage), Device::Cuda(cuda)) => {
                     // TODO: Avoid passing through the cpu storage here, especially if the gpu ids
                     // are the same.
                     let cpu_storage = storage.to_cpu_storage()?;
                     Storage::Cuda(cuda.storage_from_cpu_storage(&cpu_storage)?)
+                }
+                #[cfg(feature = "webgpu")]
+                (Storage::WebGpu(storage), Device::WebGpu(webgpu)) => {
+                    // TODO: Avoid passing through the cpu storage here, especially if the gpu ids
+                    // are the same.
+                    let cpu_storage = storage.to_cpu_storage()?;
+                    Storage::WebGpu(webgpu.storage_from_cpu_storage(&cpu_storage)?)
                 }
                 (Storage::Cpu(storage), Device::Cpu) => Storage::Cpu(storage.clone()),
                 _ => {
