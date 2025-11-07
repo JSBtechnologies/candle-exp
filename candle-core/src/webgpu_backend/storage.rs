@@ -100,18 +100,114 @@ impl WebGpuStorage {
     /// Create storage from CPU storage
     pub fn from_cpu_storage(device: &WebGpuDevice, storage: &CpuStorage) -> Result<Self> {
         let dtype = storage.dtype();
-        let elem_count = storage.as_slice::<u8>()?.len() / dtype.size_in_bytes();
-        let size_in_bytes = elem_count * dtype.size_in_bytes();
 
-        let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
-            label: Some("Candle CPU->GPU Buffer"),
-            size: size_in_bytes as u64,
-            usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
-            mapped_at_creation: false,
-        });
-
-        let data_bytes = storage.as_slice::<u8>()?;
-        device.queue.write_buffer(&buffer, 0, data_bytes);
+        // Match on storage type and convert to bytes properly
+        let (elem_count, buffer) = match storage {
+            CpuStorage::U8(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (U8)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+            CpuStorage::U32(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (U32)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+            CpuStorage::I64(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (I64)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+            CpuStorage::BF16(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (BF16)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+            CpuStorage::F16(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (F16)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+            CpuStorage::F32(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (F32)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+            CpuStorage::F64(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (F64)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+            CpuStorage::F8E4M3(data) => {
+                let buffer = device.device.create_buffer(&wgpu::BufferDescriptor {
+                    label: Some("Candle CPU->GPU Buffer (F8E4M3)"),
+                    size: (data.len() * dtype.size_in_bytes()) as u64,
+                    usage: BufferUsages::STORAGE | BufferUsages::COPY_SRC | BufferUsages::COPY_DST,
+                    mapped_at_creation: false,
+                });
+                let bytes = unsafe {
+                    std::slice::from_raw_parts(data.as_ptr() as *const u8, data.len() * dtype.size_in_bytes())
+                };
+                device.queue.write_buffer(&buffer, 0, bytes);
+                (data.len(), buffer)
+            }
+        };
 
         Ok(Self {
             buffer: Arc::new(buffer),

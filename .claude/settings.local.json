@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(cargo build:*)",
-      "Bash(where cargo:*)"
+      "Bash(where cargo:*)",
+      "Bash(pip3 install:*)",
+      "Bash(brew install:*)",
+      "Bash(pipx install:*)",
+      "Bash(~/.local/bin/maturin develop --features webgpu --release)",
+      "Bash(cargo --version:*)",
+      "Bash(export PATH=\"$HOME/.cargo/bin:$PATH\")",
+      "Bash(python3 -m venv:*)",
+      "Bash(source:*)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []
