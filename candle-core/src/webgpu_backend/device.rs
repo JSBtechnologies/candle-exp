@@ -67,10 +67,10 @@ impl WebGpuDevice {
             .ok_or(WebGpuError::AdapterNotFound)?;
 
         // Request device and queue
-        // For WASM, use downlevel_webgl2_defaults to avoid browser-unsupported limits
-        // like maxInterStageShaderComponents
+        // For WASM, use downlevel_defaults() for maximum browser compatibility
+        // downlevel_webgl2_defaults() still includes unsupported limits like maxInterStageShaderComponents
         #[cfg(target_arch = "wasm32")]
-        let limits = wgpu::Limits::downlevel_webgl2_defaults();
+        let limits = wgpu::Limits::downlevel_defaults();
 
         #[cfg(not(target_arch = "wasm32"))]
         let limits = wgpu::Limits::default();
